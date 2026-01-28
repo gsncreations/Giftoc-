@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <title>GSN Creations - GIF to C/C++ Array Converter</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --primary-dark: #1e293b;
+            --primary-blue: #2563eb;
+            --accent-teal: #0d9488;
+            --accent-purple: #7c3aed;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #475569;
+            --border-color: #cbd5e1;
+            --success-green: #059669;
+            --warning-orange: #d97706;
+            --light-gray: #f1f5f9;
+            --medium-gray: #e2e8f0;
+            --gsn-orange: #f97316;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding: 20px 0;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(249, 115, 22, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(37, 99, 235, 0.05) 0%, transparent 40%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .container {
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.08),
+                0 1px 3px rgba(0, 0, 0, 0.04);
+            padding: 40px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gsn-orange), var(--accent-teal));
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        
+        h1 {
+            font-weight: 800;
+            font-size: 3rem;
+            background: linear-gradient(90deg, var(--gsn-orange), var(--primary-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+        
+        .card:hover {
+            border-color: var(--accent-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(13, 148, 136, 0.1);
+        }
+        
+        .card-header {
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-teal));
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 16px 16px 0 0 !important;
+            padding: 20px 24px;
+            font-weight: 600;
+            color: white;
+            position: relative;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--gsn-orange), #f59e0b);
+            border-radius: 2px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-teal));
+            border: none;
+            border-radius: 12px;
+            padding: 14px 32px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-success {
+            background: linear-gradient(90deg, var(--success-green), #10b981);
+            border: none;
+            border-radius: 12px;
+            padding: 16px 40px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+            border-radius: 12px;
+            font-weight: 500;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+        
+        .btn-youtube {
+            background: linear-gradient(90deg, #ff0000, #cc0000);
+            border: none;
+            border-radius: 12px;
+            padding: 10px 25px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-youtube:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.3);
+            color: white;
+        }
+        
+        .form-control, .form-select {
+            background: var(--light-gray);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background: white;
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+            color: var(--text-dark);
+        }
+        
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .form-range::-webkit-slider-thumb {
+            background: var(--accent-teal);
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(13, 148, 136, 0.3);
+        }
+        
+        .form-range::-moz-range-thumb {
+            background: var(--accent-teal);
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(13, 148, 136, 0.3);
+        }
+        
+        .preview-container {
+            background: var(--light-gray);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 24px 0;
+            border: 2px dashed var(--border-color);
+            position: relative;
+        }
+        
+        .preview-container::before {
+            content: 'Live Preview';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--card-bg);
+            padding: 0 15px;
+            font-size: 0.9rem;
+            color: var(--accent-teal);
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+        
+        .code-output-container {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: #0f172a;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .code-controls {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .code-output {
+            font-family: 'JetBrains Mono', monospace;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 30px;
+            min-height: 300px;
+            max-height: 500px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .code-output::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        .code-output::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        .code-output::-webkit-scrollbar-thumb {
+            background: var(--accent-teal);
+            border-radius: 4px;
+        }
+        
+        .frame-control {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 24px;
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .badge-gsn {
+            background: linear-gradient(90deg, var(--gsn-orange), #f59e0b);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .creator-tag {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 20px;
+        }
+        
+        .creator-tag a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .creator-tag a:hover {
+            color: var(--gsn-orange);
+            text-decoration: underline;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-teal));
+            border-bottom: 1px solid var(--border-color);
+            color: white;
+        }
+        
+        .modal-title {
+            font-weight: 600;
+        }
+        
+        .input-group-text {
+            background: var(--light-gray);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-muted);
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--accent-teal);
+            border-color: var(--accent-teal);
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--gsn-orange), var(--primary-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 40px;
+            opacity: 0.8;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, var(--light-gray), white);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+        
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-teal), var(--primary-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .stats-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        .youtube-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 0, 0, 0.1);
+            padding: 8px 16px;
+            border-radius: 50px;
+            color: #ff0000;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 0, 0, 0.2);
+        }
+        
+        .youtube-link:hover {
+            background: rgba(255, 0, 0, 0.15);
+            transform: translateY(-2px);
+            color: #cc0000;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
+        }
+        
+        .gsn-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 50px;
+            background: linear-gradient(90deg, rgba(249, 115, 22, 0.1), rgba(37, 99, 235, 0.1));
+            color: var(--gsn-orange);
+            font-weight: 700;
+            border: 1px solid rgba(249, 115, 22, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .frame-control {
+                flex-wrap: wrap;
+                border-radius: 12px;
+                padding: 15px;
+            }
+            
+            .code-controls {
+                position: relative;
+                top: 0;
+                right: 0;
+                justify-content: flex-end;
+                margin-bottom: 10px;
+            }
+        }
+        
+        .glow-effect {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, var(--gsn-orange) 0%, transparent 70%);
+            filter: blur(20px);
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .form-check-input {
+            cursor: pointer;
+        }
+        
+        .form-check-label {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--accent-teal);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .header-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="helpModalLabel"><i class="bi bi-book me-2"></i>GSN GIF Converter Guide</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-teal mb-3">1. Upload GIF</h6>
+                            <p><i class="bi bi-upload me-2"></i>Click "Choose File" to upload from computer</p>
+                            <p><i class="bi bi-link me-2"></i>Or use URL input to load GIF from web</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-teal mb-3">2. Configure Output</h6>
+                            <p><i class="bi bi-aspect-ratio me-2"></i>Set display size matching your OLED/LCD</p>
+                            <p><i class="bi bi-grid me-2"></i>Choose pixel scanning mode for optimization</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-teal mb-3">3. Process Image</h6>
+                            <p><i class="bi bi-sliders me-2"></i>Adjust Threshold for B/W conversion</p>
+                            <p><i class="bi bi-arrows-angle-expand me-2"></i>Choose scale mode for perfect fit</p>
+                            <p><i class="bi bi-mirror me-2"></i>Enable flips and rotation as needed</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-teal mb-3">4. Generate Code</h6>
+                            <p><i class="bi bi-code-square me-2"></i>Set variable name for your animation</p>
+                            <p><i class="bi bi-cpu me-2"></i>Choose target platform (Arduino, ESP32, etc.)</p>
+                            <p><i class="bi bi-file-earmark-arrow-down me-2"></i>Save as .h file or copy code</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Animated Glow Effects -->
+        <div class="glow-effect" style="top: 10%; left: 10%;"></div>
+        <div class="glow-effect" style="top: 60%; right: 10%;"></div>
+        
+        <div class="logo">GSN CREATIONS</div>
+        <p class="logo-subtitle">Professional GIF to C/C++ Converter for Embedded Systems & Microcontrollers</p>
+        
+        <!-- Header Buttons -->
+        <div class="header-buttons">
+            <a href="https://www.youtube.com/@GSNcreation07" target="_blank" class="youtube-link">
+                <i class="bi bi-youtube"></i> Subscribe to YouTube Channel
+            </a>
+            <span class="gsn-brand">
+                <i class="bi bi-lightning-charge-fill"></i> GSN Creations
+            </span>
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#helpModal">
+                <i class="bi bi-question-circle"></i> Help Guide
+            </button>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row mb-5">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="frameCount">0</div>
+                    <div class="stats-label">Frames</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="resolution">128x64</div>
+                    <div class="stats-label">Resolution</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="fileSize">0 KB</div>
+                    <div class="stats-label">File Size</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="compression">100%</div>
+                    <div class="stats-label">Optimized</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Card -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-cloud-arrow-up-fill me-2"></i>Upload GIF Source
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <h6 class="mb-3"><i class="bi bi-pc-display me-2"></i>Local File Upload</h6>
+                        <div class="mb-3">
+                            <label for="gifUpload" class="form-label visually-hidden">Choose GIF File</label>
+                            <input type="file" class="form-control" id="gifUpload" accept=".gif">
+                        </div>
+
+                        <div class="mb-3 input-group">
+                            <input type="url" class="form-control" id="gifUrlInput" placeholder="Or enter GIF URL..." aria-label="Enter GIF URL">
+                            <button class="btn btn-outline-primary" type="button" id="loadUrlBtn" title="Load GIF from URL">
+                                <i class="bi bi-cloud-download"></i> <span class="d-none d-sm-inline">Load URL</span>
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex align-items-center mt-4">
+                            <div class="toggle-switch me-3">
+                                <input type="checkbox" id="previewEnabled" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                            <label class="form-check-label" for="previewEnabled">
+                                Enable Live Preview
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="mb-3"><i class="bi bi-gear-wide-connected me-2"></i>Output Configuration</h6>
+                        <div class="mb-3">
+                            <label for="canvasWidth" class="form-label">Display Dimensions</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="canvasWidth" placeholder="Width" min="1" value="128" aria-label="Display width">
+                                <span class="input-group-text">×</span>
+                                <input type="number" class="form-control" id="canvasHeight" placeholder="Height" min="1" value="64" aria-label="Display height">
+                                <span class="input-group-text">px</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="drawMode" class="form-label">Pixel Scanning Method</label>
+                            <select class="form-select" id="drawMode">
+                                <option value="horizontal" selected>Horizontal (MSB first)</option>
+                                <option value="vertical">Vertical (MSB first)</option>
+                                <option value="horizontal_bytes">Horizontal Bytes</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Settings Card -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-sliders2 me-2"></i>Image Processing
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="threshold" class="form-label">Threshold: <span id="thresholdValue" style="color: var(--accent-teal);">128</span></label>
+                        <input type="range" class="form-range" min="0" max="255" id="threshold" value="128">
+                        <div class="d-flex justify-content-between text-muted small">
+                            <small>Dark</small>
+                            <small>Light</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="scaleMode" class="form-label">Scaling Algorithm</label>
+                        <select class="form-select" id="scaleMode">
+                            <option value="fit">Fit to Frame</option>
+                            <option value="fit_width">Fit Width</option>
+                            <option value="fit_height">Fit Height</option>
+                            <option value="stretch">Stretch</option>
+                            <option value="custom">Custom Scale</option>
+                        </select>
+                        <div id="customScaleDiv" class="mt-2 d-none">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Scale:</span>
+                                <input type="number" class="form-control" id="customScale" value="1" step="0.1" min="0.1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Color Processing</label>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="toggle-switch me-3">
+                                <input type="checkbox" id="invertColors">
+                                <span class="toggle-slider"></span>
+                            </div>
+                            <label class="form-check-label" for="invertColors">
+                                Invert Colors
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-4" style="border-color: var(--border-color);">
+                <h6 class="mb-3"><i class="bi bi-arrow-repeat me-2"></i>Transformations</h6>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="toggle-switch me-3">
+                                <input type="checkbox" id="flipHorizontal">
+                                <span class="toggle-slider"></span>
+                            </div>
+                            <label class="form-check-label" for="flipHorizontal">
+                                Flip Horizontal
+                            </label>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="toggle-switch me-3">
+                                <input type="checkbox" id="flipVertical">
+                                <span class="toggle-slider"></span>
+                            </div>
+                            <label class="form-check-label" for="flipVertical">
+                                Flip Vertical
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="rotation" class="form-label">Rotation Angle</label>
+                        <select class="form-select" id="rotation">
+                            <option value="0">0°</option>
+                            <option value="90">90°</option>
+                            <option value="180">180°</option>
+                            <option value="270">270°</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Quick Presets</label>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-primary w-50" onclick="applyPreset('oled')">OLED</button>
+                            <button class="btn btn-sm btn-outline-primary w-50" onclick="applyPreset('tft')">TFT</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-container" id="previewSection" style="display: none;">
+            <h4 class="text-center mb-4"><i class="bi bi-play-circle me-2"></i>Animation Preview</h4>
+            <div id="framesPreview" class="text-center mb-4"></div>
+            <div class="frame-control">
+                <button id="prevFrame" class="btn btn-outline-primary" disabled><i class="bi bi-chevron-left"></i> Prev</button>
+                <span id="frameCounter" class="align-middle mx-3 px-3 py-2 bg-light rounded">Frame: 0/0</span>
+                <button id="nextFrame" class="btn btn-outline-primary" disabled>Next <i class="bi bi-chevron-right"></i></button>
+                <button id="playPause" class="btn btn-primary" disabled><i class="bi bi-play-fill"></i> Play</button>
+            </div>
+        </div>
+
+        <!-- Code Format Card -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-code-square me-2"></i>Code Output Format
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="variableName" class="form-label">Structure Name</label>
+                        <input type="text" class="form-control" id="variableName" placeholder="myAnimation" value="myAnimation">
+                        <small class="form-text text-muted">Name for the GIF data structure</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="outputFormat" class="form-label">Target Platform</label>
+                        <select class="form-select" id="outputFormat">
+                            <option value="arduino" selected>Arduino (PROGMEM)</option>
+                            <option value="plain">C/C++ Plain (const)</option>
+                            <option value="esp8266">ESP8266/ESP32 (PROGMEM)</option>
+                        </select>
+                        <small class="form-text text-muted">Platform-specific memory optimization</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Convert Button and Output -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <button id="convertButton" class="btn btn-success btn-lg w-100 mb-4 py-3" disabled>
+                    <i class="bi bi-magic me-2"></i> Convert GIF to C/C++ Array
+                </button>
+                <div class="mb-3">
+                    <label class="form-label">
+                        <h6><i class="bi bi-file-earmark-code me-2"></i>Generated Code:</h6>
+                    </label>
+                    <div class="code-output-container">
+                        <div class="code-controls">
+                            <button class="btn btn-sm btn-primary" onclick="saveAsHeader()" title="Save as .h file">
+                                <i class="bi bi-file-earmark-arrow-down"></i> <span class="d-none d-md-inline">Save .h</span>
+                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="copyCode()" title="Copy to clipboard">
+                                <i class="bi bi-clipboard"></i> <span class="d-none d-md-inline">Copy</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="clearCode()" title="Clear output">
+                                <i class="bi bi-x-circle"></i> <span class="d-none d-md-inline">Clear</span>
+                            </button>
+                        </div>
+                        <pre id="codeOutput" class="code-output">// Upload or select a GIF and click "Convert GIF" to see the result
+
+// Example output will appear here in C/C++ array format
+// Perfect for Arduino, ESP32, STM32, and other microcontrollers</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr style="border-color: var(--border-color);" class="my-5">
+
+        <footer class="text-center">
+            <p class="creator-tag">
+                <span class="badge-gsn me-2">GSN Creations</span> 
+                Professional GIF to C/C++ Converter for Embedded Systems
+                <br>
+                <span class="d-block mt-2">
+                    Built with <i class="bi bi-heart-fill text-danger mx-1"></i> by GSN Creations
+                </span>
+                <span class="d-block mt-3">
+                    <a href="https://www.youtube.com/@GSNcreation07" target="_blank" class="btn btn-youtube btn-sm">
+                        <i class="bi bi-youtube"></i> Visit Our YouTube Channel
+                    </a>
+                </span>
+                <span class="d-block mt-3">
+                    Subscribe for more embedded systems tutorials and projects!
+                </span>
+            </p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/buzzfeed/libgif-js@master/libgif.js"></script>
+    
+    <!-- Same JavaScript functionality as original -->
+    <script>
+    // Global variables
+    let gifFrames = [];
+    let currentFrameIndex = 0;
+    let isPlaying = false;
+    let playInterval;
+    let frameDelays = [];
+    let gifPlayer;
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Event listeners
+        document.getElementById('gifUpload').addEventListener('change', handleGifUpload);
+        document.getElementById('convertButton').addEventListener('click', convertGifToCode);
+        document.getElementById('prevFrame').addEventListener('click', showPreviousFrame);
+        document.getElementById('nextFrame').addEventListener('click', showNextFrame);
+        document.getElementById('playPause').addEventListener('click', togglePlayPause);
+        document.getElementById('loadUrlBtn').addEventListener('click', loadFromUrl);
+        
+        // Update preview on settings change
+        const updateControls = document.querySelectorAll('#threshold, #invertColors, #canvasWidth, #canvasHeight, #drawMode');
+        updateControls.forEach(control => {
+            control.addEventListener('change', updatePreview);
+        });
+        
+        // Scale mode change
+        document.getElementById('scaleMode').addEventListener('change', function(e) {
+            document.getElementById('customScaleDiv').classList.toggle('d-none', e.target.value !== 'custom');
+            updatePreview();
+        });
+        
+        // Transform controls
+        const transformControls = document.querySelectorAll('#flipHorizontal, #flipVertical, #rotation, #customScale');
+        transformControls.forEach(control => {
+            control.addEventListener('change', updatePreview);
+        });
+        
+        // Threshold value display
+        document.getElementById('threshold').addEventListener('input', function() {
+            document.getElementById('thresholdValue').textContent = this.value;
+            updatePreview();
+        });
+        
+        // URL input enter key
+        document.getElementById('gifUrlInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loadFromUrl();
+            }
+        });
+        
+        // Update stats when dimensions change
+        document.getElementById('canvasWidth').addEventListener('change', updateStats);
+        document.getElementById('canvasHeight').addEventListener('change', updateStats);
+        
+        // Add YouTube button animation
+        document.querySelector('.btn-youtube').addEventListener('mouseenter', function() {
+            this.innerHTML = '<i class="bi bi-youtube"></i> @GSNcreation07';
+        });
+        document.querySelector('.btn-youtube').addEventListener('mouseleave', function() {
+            this.innerHTML = '<i class="bi bi-youtube"></i> Visit Our YouTube Channel';
+        });
+    });
+
+    function updateStats() {
+        const width = parseInt(document.getElementById('canvasWidth').value);
+        const height = parseInt(document.getElementById('canvasHeight').value);
+        document.getElementById('resolution').textContent = `${width}x${height}`;
+    }
+
+    function applyPreset(type) {
+        if (type === 'oled') {
+            document.getElementById('canvasWidth').value = 128;
+            document.getElementById('canvasHeight').value = 64;
+            document.getElementById('drawMode').value = 'horizontal';
+            document.getElementById('invertColors').checked = true;
+        } else if (type === 'tft') {
+            document.getElementById('canvasWidth').value = 240;
+            document.getElementById('canvasHeight').value = 320;
+            document.getElementById('drawMode').value = 'horizontal_bytes';
+            document.getElementById('invertColors').checked = false;
+        }
+        updateStats();
+        updatePreview();
+    }
+
+    function sanitizeFileName(fileName) {
+        fileName = fileName.replace(/\.gif$/i, '');
+        fileName = fileName.replace(/[^a-zA-Z0-9_]/g, '_');
+        if (/^\d/.test(fileName)) {
+            fileName = '_' + fileName;
+        }
+        return fileName;
+    }
+
+    function handleGifUpload(event) {
+        const file = event.target.files[0];
+        if (!file || !file.type.includes('gif')) {
+            alert('Please select a GIF file!');
+            return;
+        }
+        
+        resetPreview();
+        const variableName = sanitizeFileName(file.name);
+        document.getElementById('variableName').value = variableName;
+        
+        const previewSection = document.getElementById('previewSection');
+        if (previewSection) previewSection.style.display = 'block';
+        
+        const fileURL = URL.createObjectURL(file);
+        
+        const framesPreviewDiv = document.getElementById('framesPreview');
+        if (framesPreviewDiv) {
+            framesPreviewDiv.innerHTML = '<div class="spinner-border" style="color: var(--accent-teal);" role="status"><span class="visually-hidden">Loading frames...</span></div>';
+        }
+        
+        let existingHiddenGif = document.getElementById('hiddenGifForLib');
+        if (existingHiddenGif) existingHiddenGif.remove();
+        
+        const hiddenGif = document.createElement('img');
+        hiddenGif.id = 'hiddenGifForLib';
+        hiddenGif.style.position = 'absolute';
+        hiddenGif.style.left = '-9999px';
+        hiddenGif.setAttribute('rel:animated_src', fileURL);
+        hiddenGif.setAttribute('rel:auto_play', '0');
+        document.body.appendChild(hiddenGif);
+        
+        try {
+            gifPlayer = new SuperGif({ gif: hiddenGif, auto_play: false });
+            
+            gifPlayer.load(function() {
+                URL.revokeObjectURL(fileURL);
+                const numFrames = gifPlayer.get_length();
+                
+                if (numFrames === 0) {
+                    alert('Cannot read frames from this GIF file.');
+                    resetPreview();
+                    return;
+                }
+                
+                gifFrames = [];
+                frameDelays = [];
+                
+                for (let i = 0; i < numFrames; i++) {
+                    gifPlayer.move_to(i);
+                    const canvas = gifPlayer.get_canvas();
+                    const frameCopy = document.createElement('canvas');
+                    frameCopy.width = canvas.width;
+                    frameCopy.height = canvas.height;
+                    frameCopy.getContext('2d').drawImage(canvas, 0, 0);
+                    gifFrames.push(frameCopy);
+                    frameDelays.push(100);
+                }
+                
+                currentFrameIndex = 0;
+                updateFrameCounter();
+                updatePreview();
+                
+                // Update stats
+                document.getElementById('frameCount').textContent = numFrames;
+                const fileSizeKB = (file.size / 1024).toFixed(1);
+                document.getElementById('fileSize').textContent = `${fileSizeKB} KB`;
+                
+                const prevFrameBtn = document.getElementById('prevFrame');
+                const nextFrameBtn = document.getElementById('nextFrame');
+                const playPauseBtn = document.getElementById('playPause');
+                const convertButton = document.getElementById('convertButton');
+                
+                if (prevFrameBtn) prevFrameBtn.disabled = (numFrames <= 1);
+                if (nextFrameBtn) nextFrameBtn.disabled = (numFrames <= 1);
+                if (playPauseBtn) {
+                    playPauseBtn.disabled = (numFrames <= 1);
+                    playPauseBtn.innerHTML = '<i class="bi bi-play-fill"></i> Play';
+                }
+                if (convertButton) convertButton.disabled = false;
+            });
+        } catch (error) {
+            console.error('Error processing GIF:', error);
+            alert('Cannot process GIF file. Please try another file.');
+            URL.revokeObjectURL(fileURL);
+            resetPreview();
+        } finally {
+            event.target.value = null;
+        }
+    }
+
+    function loadFromUrl() {
+        const urlInput = document.getElementById('gifUrlInput');
+        const url = urlInput.value.trim();
+        
+        if (!url) {
+            alert('Please enter a GIF URL');
+            return;
+        }
+        
+        resetPreview();
+        const previewSection = document.getElementById('previewSection');
+        const framesPreviewDiv = document.getElementById('framesPreview');
+        
+        if (previewSection) previewSection.style.display = 'block';
+        if (framesPreviewDiv) {
+            framesPreviewDiv.innerHTML = '<div class="spinner-border" style="color: var(--accent-teal);" role="status"><span class="visually-hidden">Loading GIF...</span></div>';
+        }
+        
+        const urlParts = url.split('/');
+        const fileName = urlParts[urlParts.length - 1].replace(/\.gif$/i, '');
+        const variableName = sanitizeFileName(fileName);
+        document.getElementById('variableName').value = variableName;
+        
+        let existingHiddenGif = document.getElementById('hiddenGifForLib');
+        if (existingHiddenGif) existingHiddenGif.remove();
+        
+        const hiddenGif = document.createElement('img');
+        hiddenGif.id = 'hiddenGifForLib';
+        hiddenGif.style.position = 'absolute';
+        hiddenGif.style.left = '-9999px';
+        hiddenGif.setAttribute('rel:animated_src', url);
+        hiddenGif.setAttribute('rel:auto_play', '0');
+        document.body.appendChild(hiddenGif);
+        
+        try {
+            gifPlayer = new SuperGif({ gif: hiddenGif, auto_play: false });
+            
+            gifPlayer.load(function() {
+                const numFrames = gifPlayer.get_length();
+                
+                if (numFrames === 0) {
+                    throw new Error('No frames found in GIF');
+                }
+                
+                gifFrames = [];
+                frameDelays = [];
+                
+                for (let i = 0; i < numFrames; i++) {
+                    gifPlayer.move_to(i);
+                    const canvas = gifPlayer.get_canvas();
+                    const frameCopy = document.createElement('canvas');
+                    frameCopy.width = canvas.width;
+                    frameCopy.height = canvas.height;
+                    frameCopy.getContext('2d').drawImage(canvas, 0, 0);
+                    gifFrames.push(frameCopy);
+                    frameDelays.push(100);
+                }
+                
+                currentFrameIndex = 0;
+                updateFrameCounter();
+                updatePreview();
+                
+                // Update stats
+                document.getElementById('frameCount').textContent = numFrames;
+                
+                const prevFrameBtn = document.getElementById('prevFrame');
+                const nextFrameBtn = document.getElementById('nextFrame');
+                const playPauseBtn = document.getElementById('playPause');
+                const convertButton = document.getElementById('convertButton');
+                
+                if (prevFrameBtn) prevFrameBtn.disabled = (numFrames <= 1);
+                if (nextFrameBtn) nextFrameBtn.disabled = (numFrames <= 1);
+                if (playPauseBtn) {
+                    playPauseBtn.disabled = (numFrames <= 1);
+                    playPauseBtn.innerHTML = '<i class="bi bi-play-fill"></i> Play';
+                }
+                if (convertButton) convertButton.disabled = false;
+            });
+        } catch (error) {
+            console.error('Error loading GIF:', error);
+            alert('Cannot load GIF from URL: ' + error.message);
+            if (framesPreviewDiv) {
+                framesPreviewDiv.innerHTML = '<p class="text-danger">Error loading GIF</p>';
+            }
+            document.getElementById('convertButton').disabled = true;
+        }
+    }
+
+    function updateFrameCounter() {
+        const counter = document.getElementById('frameCounter');
+        counter.textContent = `Frame: ${currentFrameIndex + 1}/${gifFrames.length}`;
+    }
+
+    function showPreviousFrame() {
+        if (gifFrames.length === 0) return;
+        currentFrameIndex = (currentFrameIndex - 1 + gifFrames.length) % gifFrames.length;
+        updateFrameCounter();
+        updatePreview();
+    }
+
+    function showNextFrame() {
+        if (gifFrames.length === 0) return;
+        currentFrameIndex = (currentFrameIndex + 1) % gifFrames.length;
+        updateFrameCounter();
+        updatePreview();
+    }
+
+    function togglePlayPause() {
+        if (gifFrames.length === 0) return;
+        
+        isPlaying = !isPlaying;
+        const playPauseButton = document.getElementById('playPause');
+        
+        if (isPlaying) {
+            playPauseButton.innerHTML = '<i class="bi bi-pause-fill"></i> Pause';
+            playGif();
+        } else {
+            playPauseButton.innerHTML = '<i class="bi bi-play-fill"></i> Play';
+            clearTimeout(playInterval);
+        }
+    }
+
+    function playGif() {
+        clearTimeout(playInterval);
+        
+        function showNextFrameWithDelay() {
+            showNextFrame();
+            const delay = frameDelays[currentFrameIndex] || 100;
+            playInterval = setTimeout(showNextFrameWithDelay, delay);
+        }
+        
+        showNextFrameWithDelay();
+    }
+
+    function updatePreview() {
+        if (gifFrames.length === 0 || !document.getElementById('previewEnabled').checked) return;
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const width = parseInt(document.getElementById('canvasWidth').value);
+        const height = parseInt(document.getElementById('canvasHeight').value);
+        const threshold = parseInt(document.getElementById('threshold').value);
+        const invertColors = document.getElementById('invertColors').checked;
+        const scaleMode = document.getElementById('scaleMode').value;
+        const customScale = parseFloat(document.getElementById('customScale').value) || 1;
+        const flipH = document.getElementById('flipHorizontal').checked;
+        const flipV = document.getElementById('flipVertical').checked;
+        const rotation = parseInt(document.getElementById('rotation').value);
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        const frame = gifFrames[currentFrameIndex];
+        if (!frame) return;
+        
+        let scale = 1;
+        let offsetX = 0;
+        let offsetY = 0;
+        
+        if (scaleMode === 'fit') {
+            const scaleX = width / frame.width;
+            const scaleY = height / frame.height;
+            scale = Math.min(scaleX, scaleY);
+        } else if (scaleMode === 'fit_width') {
+            scale = width / frame.width;
+        } else if (scaleMode === 'fit_height') {
+            scale = height / frame.height;
+        } else if (scaleMode === 'custom') {
+            scale = customScale;
+        }
+        
+        const scaledWidth = frame.width * scale;
+        const scaledHeight = frame.height * scale;
+        offsetX = (width - scaledWidth) / 2;
+        offsetY = (height - scaledHeight) / 2;
+        
+        ctx.save();
+        ctx.translate(width/2, height/2);
+        if (rotation) ctx.rotate(rotation * Math.PI / 180);
+        if (flipH) ctx.scale(-1, 1);
+        if (flipV) ctx.scale(1, -1);
+        ctx.translate(-width/2, -height/2);
+        
+        ctx.drawImage(frame, 0, 0, frame.width, frame.height, offsetX, offsetY, scaledWidth, scaledHeight);
+        ctx.restore();
+        
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const data = imageData.data;
+        
+        for (let i = 0; i < data.length; i += 4) {
+            const luminance = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+            let value = luminance >= threshold ? 255 : 0;
+            if (invertColors) value = 255 - value;
+            data[i] = data[i + 1] = data[i + 2] = value;
+            data[i + 3] = 255;
+        }
+        
+        ctx.putImageData(imageData, 0, 0);
+        
+        const previewContainer = document.getElementById('framesPreview');
+        while (previewContainer.firstChild) {
+            previewContainer.removeChild(previewContainer.firstChild);
+        }
+        
+        const framePreview = document.createElement('div');
+        framePreview.className = 'frame-preview';
+        canvas.style.borderRadius = '8px';
+        canvas.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+        framePreview.appendChild(canvas);
+        previewContainer.appendChild(framePreview);
+    }
+
+    function resetPreview() {
+        if (playInterval) {
+            clearTimeout(playInterval);
+            playInterval = null;
+        }
+        isPlaying = false;
+        const playPauseButton = document.getElementById('playPause');
+        if (playPauseButton) {
+            playPauseButton.innerHTML = '<i class="bi bi-play-fill"></i> Play';
+            playPauseButton.disabled = true;
+        }
+        
+        const previewContainer = document.getElementById('framesPreview');
+        if (previewContainer) previewContainer.innerHTML = '';
+        
+        gifFrames = [];
+        frameDelays = [];
+        currentFrameIndex = 0;
+        updateFrameCounter();
+        
+        // Reset stats
+        document.getElementById('frameCount').textContent = '0';
+        document.getElementById('fileSize').textContent = '0 KB';
+        
+        const prevFrameBtn = document.getElementById('prevFrame');
+        const nextFrameBtn = document.getElementById('nextFrame');
+        if (prevFrameBtn) prevFrameBtn.disabled = true;
+        if (nextFrameBtn) nextFrameBtn.disabled = true;
+        
+        const convertButton = document.getElementById('convertButton');
+        const codeOutput = document.getElementById('codeOutput');
+        if (convertButton) convertButton.disabled = true;
+        if (codeOutput) codeOutput.textContent = '// Upload or select a GIF and click "Convert GIF" to see the result\n\n// Example output will appear here in C/C++ array format\n// Perfect for Arduino, ESP32, STM32, and other microcontrollers';
+        
+        const previewSection = document.getElementById('previewSection');
+        if (previewSection) previewSection.style.display = 'none';
+        
+        if (gifPlayer) {
+            gifPlayer = null;
+        }
+    }
+
+    function processFrameArrays(gifFrames, width, height, drawMode, threshold, invertColors) {
+        const frameArrays = [];
+        
+        for (let i = 0; i < gifFrames.length; i++) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            const frame = gifFrames[i];
+            const scaleMode = document.getElementById('scaleMode').value;
+            const customScale = parseFloat(document.getElementById('customScale').value) || 1;
+            const flipH = document.getElementById('flipHorizontal').checked;
+            const flipV = document.getElementById('flipVertical').checked;
+            const rotation = parseInt(document.getElementById('rotation').value);
+            
+            let scale = 1;
+            let offsetX = 0;
+            let offsetY = 0;
+            
+            if (scaleMode === 'fit') {
+                const scaleX = width / frame.width;
+                const scaleY = height / frame.height;
+                scale = Math.min(scaleX, scaleY);
+            } else if (scaleMode === 'fit_width') {
+                scale = width / frame.width;
+            } else if (scaleMode === 'fit_height') {
+                scale = height / frame.height;
+            } else if (scaleMode === 'custom') {
+                scale = customScale;
+            }
+            
+            const scaledWidth = frame.width * scale;
+            const scaledHeight = frame.height * scale;
+            offsetX = (width - scaledWidth) / 2;
+            offsetY = (height - scaledHeight) / 2;
+            
+            ctx.save();
+            ctx.translate(width/2, height/2);
+            if (rotation) ctx.rotate(rotation * Math.PI / 180);
+            if (flipH) ctx.scale(-1, 1);
+            if (flipV) ctx.scale(1, -1);
+            ctx.translate(-width/2, -height/2);
+            
+            ctx.drawImage(frame, 0, 0, frame.width, frame.height, offsetX, offsetY, scaledWidth, scaledHeight);
+            ctx.restore();
+            
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const data = imageData.data;
+            let bitmap = [];
+            
+            if (drawMode === 'horizontal') {
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < Math.ceil(width / 8); x++) {
+                        let byte = 0;
+                        for (let bit = 0; bit < 8; bit++) {
+                            const pixelX = x * 8 + bit;
+                            if (pixelX >= width) continue;
+                            const pixelIndex = (y * width + pixelX) * 4;
+                            const luminance = 0.299 * data[pixelIndex] + 0.587 * data[pixelIndex + 1] + 0.114 * data[pixelIndex + 2];
+                            let isOn = luminance >= threshold;
+                            if (invertColors) isOn = !isOn;
+                            if (isOn) byte |= 1 << (7 - bit);
+                        }
+                        bitmap.push(byte);
+                    }
+                }
+            } else if (drawMode === 'vertical') {
+                for (let y = 0; y < Math.ceil(height / 8); y++) {
+                    for (let x = 0; x < width; x++) {
+                        let byte = 0;
+                        for (let bit = 0; bit < 8; bit++) {
+                            const pixelY = y * 8 + bit;
+                            if (pixelY >= height) continue;
+                            const pixelIndex = (pixelY * width + x) * 4;
+                            const luminance = 0.299 * data[pixelIndex] + 0.587 * data[pixelIndex + 1] + 0.114 * data[pixelIndex + 2];
+                            let isOn = luminance >= threshold;
+                            if (invertColors) isOn = !isOn;
+                            if (isOn) byte |= 1 << bit;
+                        }
+                        bitmap.push(byte);
+                    }
+                }
+            } else if (drawMode === 'horizontal_bytes') {
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const pixelIndex = (y * width + x) * 4;
+                        const luminance = 0.299 * data[pixelIndex] + 0.587 * data[pixelIndex + 1] + 0.114 * data[pixelIndex + 2];
+                        let isOn = luminance >= threshold;
+                        if (invertColors) isOn = !isOn;
+                        bitmap.push(isOn ? 1 : 0);
+                    }
+                }
+            }
+            
+            frameArrays.push(bitmap);
+        }
+        return frameArrays;
+    }
+
+    function convertGifToCode() {
+        if (gifFrames.length === 0) {
+            alert('Please upload a GIF first!');
+            return;
+        }
+        
+        const width = parseInt(document.getElementById('canvasWidth').value);
+        const height = parseInt(document.getElementById('canvasHeight').value);
+        const drawMode = document.getElementById('drawMode').value;
+        const variableName = document.getElementById('variableName').value || 'myGif';
+        const outputFormat = document.getElementById('outputFormat').value;
+        const threshold = parseInt(document.getElementById('threshold').value);
+        const invertColors = document.getElementById('invertColors').checked;
+        
+        const frameArrays = processFrameArrays(gifFrames, width, height, drawMode, threshold, invertColors);
+        
+        let code = "// GSN Creations - GIF to C/C++ Array Output\n";
+        code += "// ============================================\n";
+        code += "// Converted from GIF to C/C++ array for OLED/LCD displays\n";
+        code += `// Frame count: ${gifFrames.length}\n`;
+        code += `// Size: ${width}x${height} pixels\n`;
+        code += `// Draw mode: ${drawMode}\n`;
+        code += `// Threshold: ${threshold}\n`;
+        code += `// Invert colors: ${invertColors ? 'Yes' : 'No'}\n`;
+        code += `// Generated: ${new Date().toLocaleString()}\n`;
+        code += "// ============================================\n\n";
+        
+        code += `#define ${variableName.toUpperCase()}_FRAME_COUNT ${gifFrames.length}\n`;
+        code += `#define ${variableName.toUpperCase()}_WIDTH ${width}\n`;
+        code += `#define ${variableName.toUpperCase()}_HEIGHT ${height}\n\n`;
+        
+        code += `// Frame display delays (milliseconds)\n`;
+        code += `const uint16_t ${variableName}_delays[${variableName.toUpperCase()}_FRAME_COUNT] = {`;
+        for (let i = 0; i < frameDelays.length; i++) {
+            if (i > 0) code += ", ";
+            code += frameDelays[i] || 100;
+        }
+        code += "};\n\n";
+        
+        let frameSizeBytes;
+        if (drawMode === 'horizontal') {
+            frameSizeBytes = Math.ceil(width / 8) * height;
+        } else if (drawMode === 'vertical') {
+            frameSizeBytes = width * Math.ceil(height / 8);
+        } else {
+            frameSizeBytes = Math.ceil((width * height) / 8);
+        }
+        
+        if (outputFormat === 'arduino') {
+            code += `// Image data - ${frameSizeBytes} bytes per frame\n`;
+            code += `PROGMEM const uint8_t ${variableName}[${gifFrames.length}][${frameSizeBytes}] = {\n`;
+        } else if (outputFormat === 'plain') {
+            code += `// Image data - ${frameSizeBytes} bytes per frame\n`;
+            code += `const uint8_t ${variableName}[${gifFrames.length}][${frameSizeBytes}] = {\n`;
+        } else if (outputFormat === 'esp8266') {
+            code += `// Image data - ${frameSizeBytes} bytes per frame\n`;
+            code += `const uint8_t ${variableName}[${gifFrames.length}][${frameSizeBytes}] ICACHE_RODATA_ATTR = {\n`;
+        }
+        
+        for (let i = 0; i < frameArrays.length; i++) {
+            const frameData = frameArrays[i];
+            code += "  {";
+            for (let j = 0; j < frameData.length; j++) {
+                if (j % 16 === 0) code += "\n    ";
+                code += "0x" + frameData[j].toString(16).padStart(2, '0');
+                if (j < frameData.length - 1) code += ", ";
+            }
+            code += "\n  }";
+            if (i < frameArrays.length - 1) code += ",";
+            code += "\n";
+        }
+        code += "};\n\n";
+        
+        // Add usage example
+        code += "// ============================================\n";
+        code += "// Usage Example for Arduino/ESP32:\n";
+        code += "// ============================================\n";
+        code += "/*\n";
+        code += "void displayGifFrame(uint8_t frameIndex) {\n";
+        code += "  for (int y = 0; y < " + variableName.toUpperCase() + "_HEIGHT; y++) {\n";
+        code += "    for (int x = 0; x < " + variableName.toUpperCase() + "_WIDTH; x++) {\n";
+        code += "      // Your display logic here\n";
+        code += "      // Use " + variableName + "[frameIndex] data\n";
+        code += "    }\n";
+        code += "  }\n";
+        code += "  delay(" + variableName + "_delays[frameIndex]);\n";
+        code += "}\n";
+        code += "*/\n";
+        
+        document.getElementById('codeOutput').textContent = code;
+    }
+
+    function saveAsHeader() {
+        if (gifFrames.length === 0) {
+            alert('Please upload a GIF first!');
+            return;
+        }
+        
+        const width = parseInt(document.getElementById('canvasWidth').value);
+        const height = parseInt(document.getElementById('canvasHeight').value);
+        const drawMode = document.getElementById('drawMode').value;
+        const variableName = document.getElementById('variableName').value || 'myGif';
+        const threshold = parseInt(document.getElementById('threshold').value);
+        const invertColors = document.getElementById('invertColors').checked;
+        
+        const frameArrays = processFrameArrays(gifFrames, width, height, drawMode, threshold, invertColors);
+        
+        let headerContent = `#ifndef ${variableName.toUpperCase()}_H
+#define ${variableName.toUpperCase()}_H
+
+#include <stdint.h>
+#include <pgmspace.h>
+
+// GSN Creations - GIF to C/C++ Header Output
+// ============================================
+// Generated: ${new Date().toISOString().split('T')[0]}
+// Frames: ${gifFrames.length}
+// Size: ${width}x${height}
+// Draw mode: ${drawMode}
+// ============================================
+
+#ifndef ANIMATED_GIF_DEFINED
+#define ANIMATED_GIF_DEFINED
+typedef struct {
+    const uint8_t frame_count;
+    const uint16_t width;
+    const uint16_t height;
+    const uint16_t* delays;
+    const uint8_t (* frames)[${Math.ceil(width * height / 8)}];
+} AnimatedGIF;
+#endif
+
+// Constants for ${variableName}
+#define ${variableName.toUpperCase()}_FRAME_COUNT ${gifFrames.length}
+#define ${variableName.toUpperCase()}_WIDTH ${width}
+#define ${variableName.toUpperCase()}_HEIGHT ${height}
+
+// Frame delays (milliseconds)
+const uint16_t ${variableName}_delays[${variableName.toUpperCase()}_FRAME_COUNT] = {`;
+        
+        for (let i = 0; i < frameDelays.length; i++) {
+            if (i > 0) headerContent += ", ";
+            headerContent += frameDelays[i] || 100;
+        }
+        headerContent += `};
+
+// Frame data
+PROGMEM const uint8_t ${variableName}_frames[${variableName.toUpperCase()}_FRAME_COUNT][${Math.ceil(width * height / 8)}] = {
+`;
+        
+        for (let i = 0; i < frameArrays.length; i++) {
+            const frameData = frameArrays[i];
+            headerContent += "  {";
+            for (let j = 0; j < frameData.length; j++) {
+                if (j % 16 === 0) headerContent += "\n    ";
+                headerContent += "0x" + frameData[j].toString(16).padStart(2, '0');
+                if (j < frameData.length - 1) headerContent += ", ";
+            }
+            headerContent += "\n  }";
+            if (i < frameArrays.length - 1) headerContent += ",";
+            headerContent += "\n";
+        }
+        headerContent += `};
+
+// GIF object
+const AnimatedGIF ${variableName}_gif = {
+    .frame_count = ${variableName.toUpperCase()}_FRAME_COUNT,
+    .width = ${variableName.toUpperCase()}_WIDTH,
+    .height = ${variableName.toUpperCase()}_HEIGHT,
+    .delays = ${variableName}_delays,
+    .frames = ${variableName}_frames
+};
+
+#endif // ${variableName.toUpperCase()}_H
+`;
+        
+        const blob = new Blob([headerContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${variableName}.h`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function copyCode() {
+        const codeOutput = document.getElementById('codeOutput');
+        navigator.clipboard.writeText(codeOutput.textContent)
+            .then(() => { 
+                const btn = document.querySelector('[onclick="copyCode()"]');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check"></i> <span class="d-none d-md-inline">Copied!</span>';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-success');
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-primary');
+                }, 2000);
+            })
+            .catch(err => { alert('Copy error: ' + err); });
+    }
+
+    function clearCode() {
+        document.getElementById('codeOutput').textContent = '// Upload or select a GIF and click "Convert GIF" to see the result\n\n// Example output will appear here in C/C++ array format\n// Perfect for Arduino, ESP32, STM32, and other microcontrollers';
+    }
+    </script>
+</body>
+</html>
